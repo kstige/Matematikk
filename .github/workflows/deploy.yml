@@ -1,4 +1,4 @@
-name: Deploy Matematikk-sider
+name: Deploy Matematikk
 
 on:
   push:
@@ -18,53 +18,19 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v3
-        with:
-          enable-cache: true # Prøver cache igjen, 400-feilen er ofte forbigående
 
-      - name: Build and Organize Books
-        run: |
-          mkdir -p _site/1T _site/R1 _site/R2
-          
-          # Vi bruker 'uvx' (uv extension) for å kjøre jupyter-book uten 
-          # å måtte installere den manuelt i miljøet først. Lynraskt!
-          
-          cd 1T && uvx jupyter-book build --html
-          # Denne linjen sjekker hva som faktisk ble laget:
-          ls -R _build/
-          cp -r _build/site/* ../_site/1T/ || cp -r _build/html/* ../_site/1T/ || echo "Fant ingen filer!"
-          cd ..
-          cd R1 && uvx jupyter-book build --html && cp -r _build/site/* ../_site/R1/ && cd ..
-          cd R2 && uvx jupyter-book build --html && cp -r _build/site/* ../_site/R2/ && cd ..
-
-      - name: Create Index
-        run: |
-          cat > _site/index.html <<EOF
-          <!DOCTYPE html>
-          <html>
-          <head><meta charset="utf-8"><title>Matematikkfag</title></head>
-          <body style="font-family: sans-serif; max-width: 800px; margin: 40px auto; line-height: 1.6;">
-            <h1>Matematikkressurser</h1>
-            <ul>
-              <li><a href="1T/">Matematikk 1T</a></li>
-              <li><a href="R1/">Matematikk R1</a></li>
-              <li><a href="R2/">Matematikk R2</a></li>
-            </ul>
-          </body>
-          </html>
-          EOF
+      - name: Build Site
+        # Denne ene kommandoen bygger nå alt (1T, R1, R2) i én omgang
+        run: uvx myst build --html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '_site'
+          path: '_build/site' # MyST legger alt her automatisk
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v4
