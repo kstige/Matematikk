@@ -20,15 +20,9 @@ site:
       url: /R2/index.md
 
   projects:
-    - path: .
-      slug: hjem
-      title: Hjem
     - path: ./1T
       slug: 1t
-      title: Matematikk 1T
     - path: ./R1
       slug: r1
-      title: Matematikk R1
     - path: ./R2
       slug: r2
-      title: Matematikk R2
