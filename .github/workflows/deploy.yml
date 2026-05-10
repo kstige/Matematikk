@@ -23,7 +23,7 @@ jobs:
           enable-cache: true
 
       - name: Install Jupyter Book 2
-        run: uv pip install jupyter-book --system
+        run: uv tool install jupyter-book --with "jupyter-book>=2.0.0"
 
       - name: Build and Organize Books
         run: |
@@ -31,13 +31,13 @@ jobs:
           mkdir -p _site/1T _site/R1 _site/R2
           
           # Bygg 1T og flytt til undermappe
-          cd 1T && uv run jupyter-book build --html && cp -r _build/site/* ../_site/1T/ && cd ..
+          cd 1T && uv run jupyter book build --html && cp -r _build/site/* ../_site/1T/ && cd ..
           
           # Bygg R1 og flytt til undermappe
-          cd R1 && uv run jupyter-book build --html && cp -r _build/site/* ../_site/R1/ && cd ..
+          cd R1 && uv run jupyter book build --html && cp -r _build/site/* ../_site/R1/ && cd ..
           
           # Bygg R2 og flytt til undermappe
-          cd R2 && uv run jupyter-book build --html && cp -r _build/site/* ../_site/R2/ && cd ..
+          cd R2 && uv run jupyter book build --html && cp -r _build/site/* ../_site/R2/ && cd ..
 
       - name: Create Landing Page (Optional)
         run: |
