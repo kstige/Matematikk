@@ -4,10 +4,6 @@ on:
   push:
     branches: [main]
 
-env:
-  # Henter automatisk reponavn (f.eks. /Matematikk)
-  BASE_URL: /${{ github.event.repository.name }}
-
 permissions:
   contents: read
   pages: write
@@ -32,33 +28,69 @@ jobs:
         with:
           enable-cache: true
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Build All Books
+      - name: Build and Assemble Site
         run: |
-          # Vi lager en felles ut-mappe
+          # 1. Opprett den endelige mappen som skal publiseres
           mkdir -p _site/1T _site/R1 _site/R2
 
-          # Bygger hvert fag separat med uvx (som bruker jupyter-book via myst)
-          # Vi overstyrer BASE_URL miljøvariabelen for hver undermappe
-          
-          cd 1T && BASE_URL=${{ env.BASE_URL }}/1T/ uvx jupyter-book build --html && cp -r _build/site/* ../_site/1T/ && cd ..
-          cd R1 && BASE_URL=${{ env.BASE_URL }}/R1/ uvx jupyter-book build --html && cp -r _build/site/* ../_site/R1/ && cd ..
-          cd R2 && BASE_URL=${{ env.BASE_URL }}/R2/ uvx jupyter-book build --html && cp -r _build/site/* ../_site/R2/ && cd ..
+          # 2. Bygg 1T
+          echo "Building 1T..."
+          cd 1T
+          uvx jupyter-book build --html
+          # Sjekk om MyST lagde en undermappe '1T' inne i _build/site
+          if [ -d "_build/site/1T" ]; then
+            cp -r _build/site/1T/* ../_site/1T/
+          else
+            cp -r _build/site/* ../_site/1T/
+          fi
+          cd ..
 
-          # Lager en enkel forside i roten av _site
+          # 3. Bygg R1
+          echo "Building R1..."
+          cd R1
+          uvx jupyter-book build --html
+          if [ -d "_build/site/R1" ]; then
+            cp -r _build/site/R1/* ../_site/R1/
+          else
+            cp -r _build/site/* ../_site/R1/
+          fi
+          cd ..
+
+          # 4. Bygg R2
+          echo "Building R2..."
+          cd R2
+          uvx jupyter-book build --html
+          if [ -d "_build/site/R2" ]; then
+            cp -r _build/site/R2/* ../_site/R2/
+          else
+            cp -r _build/site/* ../_site/R2/
+          fi
+          cd ..
+
+          # 5. Lag hoved-forsiden
           cat > _site/index.html <<EOF
           <!DOCTYPE html>
           <html>
-            <head><meta charset="utf-8"><title>Matematikk</title></head>
-            <body style="font-family: system-ui, sans-serif; max-width: 600px; margin: 50px auto; line-height: 1.5;">
+            <head>
+              <meta charset="utf-8">
+              <title>Matematikkressurser</title>
+              <style>
+                body { font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; max-width: 800px; margin: 40px auto; padding: 0 20px; color: #333; }
+                h1 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
+                ul { list-style: none; padding: 0; }
+                li { margin: 10px 0; }
+                a { text-decoration: none; color: #0066cc; font-weight: bold; font-size: 1.2rem; }
+                a:hover { text-decoration: underline; }
+                .card { background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; }
+              </style>
+            </head>
+            <body>
               <h1>Matematikkressurser</h1>
-              <p>Velg fag under:</p>
+              <p>Velkommen! Velg faget du vil se på under:</p>
               <ul>
-                <li><a href="1T/">Matematikk 1T</a></li>
-                <li><a href="R1/">Matematikk R1</a></li>
-                <li><a href="R2/">Matematikk R2</a></li>
+                <li class="card"><a href="1T/">Matematikk 1T</a></li>
+                <li class="card"><a href="R1/">Matematikk R1</a></li>
+                <li class="card"><a href="R2/">Matematikk R2</a></li>
               </ul>
             </body>
           </html>
