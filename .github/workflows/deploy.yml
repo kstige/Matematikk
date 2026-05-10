@@ -9,15 +9,8 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: 'pages'
-  cancel-in-progress: false
-
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,33 +18,39 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v3
-        with:
-          enable-cache: true
 
       - name: Build and Assemble Site
         run: |
           mkdir -p _site/1T _site/R1 _site/R2
 
           # Bygg 1T
-          cd 1T && uvx jupyter-book build --html && cd ..
-          cp -r 1T/_build/site/* _site/1T/ || cp -r 1T/_build/html/* _site/1T/ || echo "1T feilet"
+          cd 1T && uvx myst build --html && cd ..
+          cp -r 1T/_build/site/* _site/1T/
 
           # Bygg R1
-          cd R1 && uvx jupyter-book build --html && cd ..
-          cp -r R1/_build/site/* _site/R1/ || cp -r R1/_build/html/* _site/R1/ || echo "R1 feilet"
+          cd R1 && uvx myst build --html && cd ..
+          cp -r R1/_build/site/* _site/R1/
 
           # Bygg R2
-          cd R2 && uvx jupyter-book build --html && cd ..
-          cp -r R2/_build/site/* _site/R2/ || cp -r R2/_build/html/* _site/R2/ || echo "R2 feilet"
+          cd R2 && uvx myst build --html && cd ..
+          cp -r R2/_build/site/* _site/R2/
 
-          # Lag forside
+          # Lag hoved-forsiden
           cat > _site/index.html <<EOF
-          <html><body><h1>Matematikk</h1><ul><li><a href="1T/">1T</a></li><li><a href="R1/">R1</a></li><li><a href="R2/">R2</a></li></ul></body></html>
+          <!DOCTYPE html>
+          <html>
+            <head><meta charset="utf-8"><title>Matematikk</title></head>
+            <body style="font-family: sans-serif; padding: 50px; max-width: 800px; margin: auto;">
+              <h1>Matematikkressurser</h1>
+              <hr>
+              <ul>
+                <li><a href="1T/">Matematikk 1T</a></li>
+                <li><a href="R1/">Matematikk R1</a></li>
+                <li><a href="R2/">Matematikk R2</a></li>
+              </ul>
+            </body>
+          </html>
           EOF
-
-          # --- DEBUG: Dette skriver ut den faktiske filstrukturen i loggen ---
-          echo "SJEKKER FILSTRUKTUR I _SITE:"
-          find _site -maxdepth 3
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -59,5 +58,4 @@ jobs:
           path: '_site'
 
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v4

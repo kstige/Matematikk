@@ -12,8 +12,7 @@ site:
   template: book-theme
   options:
     base_url: /Matematikk/1T/
-    build:
-      static: true
-  # options:
-  #   favicon: favicon.ico
-  #   logo: site_logo.png
+
+build:
+  site:
+    static: true
