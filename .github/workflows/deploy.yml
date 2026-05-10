@@ -24,15 +24,13 @@ jobs:
       - name: Build and Organize Books
         run: |
           mkdir -p _site/1T _site/R1 _site/R2
+        
           
-          # Vi bruker 'uvx' (uv extension) for å kjøre jupyter-book uten 
-          # å måtte installere den manuelt i miljøet først. Lynraskt!
-          
-          cd 1T && uvx jupyter book build --html
+          cd 1T && uv run jupyter book build --html
           ls -R _build/
           cp -r _build/site/* ../_site/1T/ || cp -r _build/html/* ../_site/1T/ || echo "Fant ingen filer!"
-          cd R1 && uvx jupyter book build --html && cp -r _build/site/* ../_site/R1/ && cd ..
-          cd R2 && uvx jupyter book build --html && cp -r _build/site/* ../_site/R2/ && cd ..
+          cd R1 && uv run jupyter book build --html && cp -r _build/site/* ../_site/R1/ && cd ..
+          cd R2 && uv run jupyter book build --html && cp -r _build/site/* ../_site/R2/ && cd ..
 
       - name: Create Index
         run: |
