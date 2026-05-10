@@ -33,15 +33,15 @@ jobs:
           mkdir -p _site/1T _site/R1 _site/R2
 
           # Bygg 1T
-          cd 1T && uvx jupyter-book build --html --static && cd ..
+          cd 1T && uvx jupyter-book build --html && cd ..
           cp -r 1T/_build/site/* _site/1T/ || cp -r 1T/_build/html/* _site/1T/ || echo "1T feilet"
 
           # Bygg R1
-          cd R1 && uvx jupyter-book build --html --static && cd ..
+          cd R1 && uvx jupyter-book build --html && cd ..
           cp -r R1/_build/site/* _site/R1/ || cp -r R1/_build/html/* _site/R1/ || echo "R1 feilet"
 
           # Bygg R2
-          cd R2 && uvx jupyter-book build --html --static && cd ..
+          cd R2 && uvx jupyter-book build --html && cd ..
           cp -r R2/_build/site/* _site/R2/ || cp -r R2/_build/html/* _site/R2/ || echo "R2 feilet"
 
           # Lag forside
