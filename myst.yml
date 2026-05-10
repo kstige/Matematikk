@@ -1,0 +1,34 @@
+version: 1
+project:
+  title: Matematikk-portalen
+  description: Ressurser for 1T, R1 og R2 matematikk.
+  authors:
+    - name: Kristoffer
+
+site:
+  template: book-theme
+  options:
+    # Viktig for github.io/Matematikk:
+    base_url: /Matematikk
+  
+  # Dette definerer toppmenyen (navigation bar)
+  nav:
+    - title: Forside
+      url: /index.md
+    - title: 1T
+      project: 1t
+    - title: R1
+      project: r1
+    - title: R2
+      project: r2
+
+  # Her kobler vi mappene til prosjektene
+  projects:
+    - path: .
+      slug: hjem
+    - path: ./1T
+      slug: 1t
+    - path: ./R1
+      slug: r1
+    - path: ./R2
+      slug: r2
