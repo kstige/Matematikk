@@ -18,15 +18,13 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true # Gjøre fremtidige bygg raskere
 
-      - name: Setup Python
-        run: uv python install
-
-      - name: Install MyST
-        run: uv pip install mystmd
+      - name: Install dependencies
+        run: uv sync # Dette lager det virtuelle miljøet automatisk fra pyproject.toml
 
       - name: Build Site
-        # Denne kommandoen bygger alle prosjektene definert i myst.yml
         run: uv run myst build --html
 
       - name: Upload Artifact
