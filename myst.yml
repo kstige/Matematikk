@@ -13,16 +13,13 @@ site:
   
   # Dette definerer toppmenyen (navigation bar)
   nav:
-    - title: Forside
-      url: /index.md
     - title: 1T
-      project: 1t
+      url: /1T/index.md    # Legg til denne linjen
     - title: R1
-      project: r1
+      url: /R1/index.md    # Legg til denne linjen
     - title: R2
-      project: r2
+      url: /R2/index.md    # Legg til denne linjen
 
-  # Her kobler vi mappene til prosjektene
   projects:
     - path: .
       slug: hjem
