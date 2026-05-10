@@ -21,8 +21,7 @@ jobs:
 
       - name: Build Site
         run: |
-          # Vi sender med base_url direkte i kommandoen
-          BASE_URL=/Matematikk/ uvx myst build --html
+          BASE_URL=/Matematikk/ uvx jupyter-book build --html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
