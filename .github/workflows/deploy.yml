@@ -1,0 +1,75 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+name: Deploy Matematikk-sider
+
+on:
+  push:
+    branches: ["main"] # Pass på at denne matcher navnet på din hovedbranch
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Install Jupyter Book 2
+        run: uv pip install jupyter-book --system
+
+      - name: Build and Organize Books
+        run: |
+          # Opprett den ferdige mappen som skal publiseres
+          mkdir -p _site/1T _site/R1 _site/R2
+          
+          # Bygg 1T og flytt til undermappe
+          cd 1T && uv run jupyter-book build --html && cp -r _build/site/* ../_site/1T/ && cd ..
+          
+          # Bygg R1 og flytt til undermappe
+          cd R1 && uv run jupyter-book build --html && cp -r _build/site/* ../_site/R1/ && cd ..
+          
+          # Bygg R2 og flytt til undermappe
+          cd R2 && uv run jupyter-book build --html && cp -r _build/site/* ../_site/R2/ && cd ..
+
+      - name: Create Landing Page (Optional)
+        run: |
+          if [ ! -f _site/index.html ]; then
+            cat > _site/index.html <<EOF
+            <!DOCTYPE html>
+            <html>
+            <head><title>Matematikkfag</title></head>
+            <body style="font-family: sans-serif; padding: 2em;">
+              <h1>Velkommen til Matematikksidene</h1>
+              <ul>
+                <li><a href="1T/">Matematikk 1T</a></li>
+                <li><a href="R1/">Matematikk R1</a></li>
+                <li><a href="R2/">Matematikk R2</a></li>
+              </ul>
+            </body>
+            </html>
+          EOF
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
