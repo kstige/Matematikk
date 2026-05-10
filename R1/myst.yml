@@ -10,7 +10,8 @@ project:
   # To autogenerate a Table of Contents, run "jupyter book init --write-toc"
 site:
   template: book-theme
-  base_url: /Matematikk/1T/
+  options:
+    base_url: /Matematikk/R1/
   # options:
   #   favicon: favicon.ico
   #   logo: site_logo.png
