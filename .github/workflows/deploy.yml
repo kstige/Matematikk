@@ -24,15 +24,15 @@ jobs:
           mkdir -p _site/1T _site/R1 _site/R2
 
           # Bygg 1T
-          cd 1T && uvx myst build --html && cd ..
+          cd 1T && uvx jupyter-book build --html && cd ..
           cp -r 1T/_build/site/* _site/1T/
 
           # Bygg R1
-          cd R1 && uvx myst build --html && cd ..
+          cd R1 && uvx jupyter-book build --html && cd ..
           cp -r R1/_build/site/* _site/R1/
 
           # Bygg R2
-          cd R2 && uvx myst build --html && cd ..
+          cd R2 && uvx jupyter-book build --html && cd ..
           cp -r R2/_build/site/* _site/R2/
 
           # Lag hoved-forsiden
