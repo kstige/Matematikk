@@ -13,13 +13,12 @@ site:
   template: book-theme
   options:
     base_url: /Matematikk/
-  
-  # HER skal entries ligge for at undermappene skal inkluderes
-  entries:
-    - index.md
-    - 1T/index.md
-    - R1/index.md
-    - R2/index.md
+    # HER må entries ligge:
+    entries:
+      - index.md
+      - 1T/index.md
+      - R1/index.md
+      - R2/index.md
 
   nav:
     - title: 1T
