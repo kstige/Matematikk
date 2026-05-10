@@ -1,9 +1,8 @@
-# See docs at: https://mystmd.org/guide/frontmatter
 name: Deploy Matematikk-sider
 
 on:
   push:
-    branches: ["main"] # Pass på at denne matcher navnet på din hovedbranch
+    branches: ["main"]
 
 permissions:
   contents: read
@@ -20,43 +19,35 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v3
         with:
-          enable-cache: true
-
-      - name: Install Jupyter Book 2
-        run: uv tool install jupyter-book --with "jupyter-book>=2.0.0"
+          enable-cache: true # Prøver cache igjen, 400-feilen er ofte forbigående
 
       - name: Build and Organize Books
         run: |
-          # Opprett den ferdige mappen som skal publiseres
           mkdir -p _site/1T _site/R1 _site/R2
           
-          # Bygg 1T og flytt til undermappe
-          cd 1T && uv run jupyter book build --html && cp -r _build/site/* ../_site/1T/ && cd ..
+          # Vi bruker 'uvx' (uv extension) for å kjøre jupyter-book uten 
+          # å måtte installere den manuelt i miljøet først. Lynraskt!
           
-          # Bygg R1 og flytt til undermappe
-          cd R1 && uv run jupyter book build --html && cp -r _build/site/* ../_site/R1/ && cd ..
-          
-          # Bygg R2 og flytt til undermappe
-          cd R2 && uv run jupyter book build --html && cp -r _build/site/* ../_site/R2/ && cd ..
+          cd 1T && uvx jupyter-book build --html && cp -r _build/site/* ../_site/1T/ && cd ..
+          cd R1 && uvx jupyter-book build --html && cp -r _build/site/* ../_site/R1/ && cd ..
+          cd R2 && uvx jupyter-book build --html && cp -r _build/site/* ../_site/R2/ && cd ..
 
-      - name: Create Landing Page (Optional)
+      - name: Create Index
         run: |
-          if [ ! -f _site/index.html ]; then
-            cat > _site/index.html <<EOF
-            <!DOCTYPE html>
-            <html>
-            <head><title>Matematikkfag</title></head>
-            <body style="font-family: sans-serif; padding: 2em;">
-              <h1>Velkommen til Matematikksidene</h1>
-              <ul>
-                <li><a href="1T/">Matematikk 1T</a></li>
-                <li><a href="R1/">Matematikk R1</a></li>
-                <li><a href="R2/">Matematikk R2</a></li>
-              </ul>
-            </body>
-            </html>
+          cat > _site/index.html <<EOF
+          <!DOCTYPE html>
+          <html>
+          <head><meta charset="utf-8"><title>Matematikkfag</title></head>
+          <body style="font-family: sans-serif; max-width: 800px; margin: 40px auto; line-height: 1.6;">
+            <h1>Matematikkressurser</h1>
+            <ul>
+              <li><a href="1T/">Matematikk 1T</a></li>
+              <li><a href="R1/">Matematikk R1</a></li>
+              <li><a href="R2/">Matematikk R2</a></li>
+            </ul>
+          </body>
+          </html>
           EOF
-          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
