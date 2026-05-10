@@ -25,7 +25,7 @@ jobs:
         run: uv sync # Dette lager det virtuelle miljøet automatisk fra pyproject.toml
 
       - name: Build Site
-        run: uv run myst build --html
+        run: uvx mystmd build --html
 
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
