@@ -8,6 +8,11 @@ project:
   # authors: []
   # github:
   # To autogenerate a Table of Contents, run "jupyter book init --write-toc"
+  entries:
+    - index.md
+    - 1T/index.md
+    - R1/index.md
+    - R2/index.md
 site:
   template: book-theme
   # options:
@@ -17,11 +22,11 @@ site:
     base_url: /Matematikk/
   nav:
     - title: 1T
-      url: /1T/             # MyST ser etter 1T/index.md
+      file: 1T/index.md    # Bruk 'file' i stedet for 'url'
     - title: R1
-      url: /R1/             # MyST ser etter R1/index.md
+      file: R1/index.md
     - title: R2
-      url: /R2/             # MyST ser etter R2/index.md
+      file: R2/index.md
 
 # Her definerer du hva som skal stå i venstremenyen for hver del
 # MyST lager automatisk en sidebar per mappe hvis du har index-filer der.

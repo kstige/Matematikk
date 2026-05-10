@@ -20,8 +20,9 @@ jobs:
         uses: astral-sh/setup-uv@v3
 
       - name: Build Site
-        # Denne ene kommandoen bygger nå alt (1T, R1, R2) i én omgang
-        run: uvx jupyter-book build --html
+        run: |
+          # Vi sender med base_url direkte i kommandoen
+          BASE_URL=/Matematikk/ uvx myst build --html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
