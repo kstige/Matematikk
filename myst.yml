@@ -6,8 +6,7 @@ project:
 
 site:
   template: book-theme
-  options:
-    base_url: /Matematikk/
+  base_url: /Matematikk/
 
   nav:
     - title: Hjem
@@ -20,6 +19,8 @@ site:
       url: /R2/index.md
 
   projects:
+    - path: .
+      slug: ''
     - path: ./1T
       slug: 1t
     - path: ./R1
