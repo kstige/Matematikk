@@ -30,71 +30,28 @@ jobs:
 
       - name: Build and Assemble Site
         run: |
-          # 1. Opprett den endelige mappen som skal publiseres
           mkdir -p _site/1T _site/R1 _site/R2
 
-          # 2. Bygg 1T
-          echo "Building 1T..."
-          cd 1T
-          uvx jupyter-book build --html
-          # Sjekk om MyST lagde en undermappe '1T' inne i _build/site
-          if [ -d "_build/site/1T" ]; then
-            cp -r _build/site/1T/* ../_site/1T/
-          else
-            cp -r _build/site/* ../_site/1T/
-          fi
-          cd ..
+          # Bygg 1T
+          cd 1T && uvx jupyter-book build --html && cd ..
+          cp -r 1T/_build/site/* _site/1T/ || cp -r 1T/_build/html/* _site/1T/ || echo "1T feilet"
 
-          # 3. Bygg R1
-          echo "Building R1..."
-          cd R1
-          uvx jupyter-book build --html
-          if [ -d "_build/site/R1" ]; then
-            cp -r _build/site/R1/* ../_site/R1/
-          else
-            cp -r _build/site/* ../_site/R1/
-          fi
-          cd ..
+          # Bygg R1
+          cd R1 && uvx jupyter-book build --html && cd ..
+          cp -r R1/_build/site/* _site/R1/ || cp -r R1/_build/html/* _site/R1/ || echo "R1 feilet"
 
-          # 4. Bygg R2
-          echo "Building R2..."
-          cd R2
-          uvx jupyter-book build --html
-          if [ -d "_build/site/R2" ]; then
-            cp -r _build/site/R2/* ../_site/R2/
-          else
-            cp -r _build/site/* ../_site/R2/
-          fi
-          cd ..
+          # Bygg R2
+          cd R2 && uvx jupyter-book build --html && cd ..
+          cp -r R2/_build/site/* _site/R2/ || cp -r R2/_build/html/* _site/R2/ || echo "R2 feilet"
 
-          # 5. Lag hoved-forsiden
+          # Lag forside
           cat > _site/index.html <<EOF
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <meta charset="utf-8">
-              <title>Matematikkressurser</title>
-              <style>
-                body { font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; max-width: 800px; margin: 40px auto; padding: 0 20px; color: #333; }
-                h1 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
-                ul { list-style: none; padding: 0; }
-                li { margin: 10px 0; }
-                a { text-decoration: none; color: #0066cc; font-weight: bold; font-size: 1.2rem; }
-                a:hover { text-decoration: underline; }
-                .card { background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; }
-              </style>
-            </head>
-            <body>
-              <h1>Matematikkressurser</h1>
-              <p>Velkommen! Velg faget du vil se på under:</p>
-              <ul>
-                <li class="card"><a href="1T/">Matematikk 1T</a></li>
-                <li class="card"><a href="R1/">Matematikk R1</a></li>
-                <li class="card"><a href="R2/">Matematikk R2</a></li>
-              </ul>
-            </body>
-          </html>
+          <html><body><h1>Matematikk</h1><ul><li><a href="1T/">1T</a></li><li><a href="R1/">R1</a></li><li><a href="R2/">R2</a></li></ul></body></html>
           EOF
+
+          # --- DEBUG: Dette skriver ut den faktiske filstrukturen i loggen ---
+          echo "SJEKKER FILSTRUKTUR I _SITE:"
+          find _site -maxdepth 3
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
