@@ -1,27 +1,22 @@
-# This file was created automatically with `jupyter-book init --gh-pages` 🪄 💚
-# Ensure your GitHub Pages settings for this repository are set to deploy with **GitHub Actions**.
+name: Deploy Matematikk
 
-name: Jupyter Book (via myst) GitHub Pages Deploy
 on:
   push:
-    # Runs on pushes targeting the default branch
     branches: [main]
+
 env:
-  # `BASE_URL` determines, relative to the root of the domain, the URL that your site is served from.
-  # E.g., if your site lives at `https://mydomain.org/myproject`, set `BASE_URL=/myproject`.
-  # If, instead, your site lives at the root of the domain, at `https://mydomain.org`, set `BASE_URL=''`.
+  # Henter automatisk reponavn (f.eks. /Matematikk)
   BASE_URL: /${{ github.event.repository.name }}
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+
 concurrency:
   group: 'pages'
   cancel-in-progress: false
+
 jobs:
   deploy:
     environment:
@@ -29,20 +24,51 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
         with:
-          node-version: 18.x
-      - name: Install Jupyter Book (via myst)
-        run: npm install -g jupyter-book
-      - name: Build HTML Assets
-        run: jupyter-book build --html
+          enable-cache: true
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Build All Books
+        run: |
+          # Vi lager en felles ut-mappe
+          mkdir -p _site/1T _site/R1 _site/R2
+
+          # Bygger hvert fag separat med uvx (som bruker jupyter-book via myst)
+          # Vi overstyrer BASE_URL miljøvariabelen for hver undermappe
+          
+          cd 1T && BASE_URL=${{ env.BASE_URL }}/1T/ uvx jupyter-book build --html && cp -r _build/site/* ../_site/1T/ && cd ..
+          cd R1 && BASE_URL=${{ env.BASE_URL }}/R1/ uvx jupyter-book build --html && cp -r _build/site/* ../_site/R1/ && cd ..
+          cd R2 && BASE_URL=${{ env.BASE_URL }}/R2/ uvx jupyter-book build --html && cp -r _build/site/* ../_site/R2/ && cd ..
+
+          # Lager en enkel forside i roten av _site
+          cat > _site/index.html <<EOF
+          <!DOCTYPE html>
+          <html>
+            <head><meta charset="utf-8"><title>Matematikk</title></head>
+            <body style="font-family: system-ui, sans-serif; max-width: 600px; margin: 50px auto; line-height: 1.5;">
+              <h1>Matematikkressurser</h1>
+              <p>Velg fag under:</p>
+              <ul>
+                <li><a href="1T/">Matematikk 1T</a></li>
+                <li><a href="R1/">Matematikk R1</a></li>
+                <li><a href="R2/">Matematikk R2</a></li>
+              </ul>
+            </body>
+          </html>
+          EOF
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './_build/html'
+          path: '_site'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
