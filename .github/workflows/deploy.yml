@@ -24,11 +24,10 @@ jobs:
       - name: Install dependencies
         run: uv sync # Dette lager det virtuelle miljøet automatisk fra pyproject.toml
 
-      - name: Build Site
-        # Vi sier: Bruk pakken 'mystmd', men kjør kommandoen 'myst'
-        run: uvx --from mystmd myst build --html
-        
-      - name: Upload Artifact
+      - name: Build site
+        run: uvx --from jupyter-book jupyter-book build . --path-output _build/html
+
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: '_build/html'
