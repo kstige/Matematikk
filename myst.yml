@@ -10,7 +10,7 @@ site:
 
   nav:
     - title: Hjem
-      url: /index.md
+      url: /
     - title: 1T
       url: /1T/index.md
     - title: R1
@@ -20,7 +20,7 @@ site:
 
   projects:
     - path: .
-      slug: ''
+      slug: ""
     - path: ./1T
       slug: 1t
     - path: ./R1

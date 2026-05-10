@@ -1,6 +1,6 @@
-# Matematikk R1
+# Matematikk-portalen
 
-På denne siden vil det etterhvert komme fagstoff og eksempler til matematikk.
+Velkommen til matematikk-portalen! Her finner du ressurser og fagstoff for matematikk 1T, R1 og R2.
 
 ```{tableofcontents}
 ```
